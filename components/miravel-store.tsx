@@ -66,26 +66,35 @@ function Monogram({ className = "" }: { className?: string }) {
 function MenuPanel() {
   return (
     <SheetContent side="top" className="menu-panel" showCloseButton={false}>
-      <SheetHeader className="menu-panel-head">
-        <SheetTitle className="menu-logo"><Monogram /></SheetTitle>
-        <SheetDescription className="sr-only">Miravel navigation menu</SheetDescription>
-        <SheetClose className="round-close" aria-label="Close menu"><X /></SheetClose>
-      </SheetHeader>
+      <SheetTitle className="sr-only">Shop Miravel</SheetTitle>
+      <SheetDescription className="sr-only">Browse all clothing, accessories, new arrivals and editorial collections.</SheetDescription>
+      <SheetClose className="mega-close" aria-label="Close menu"><X /></SheetClose>
       <div className="menu-grid">
-        <div className="menu-primary">
-          {['New in', 'Clothing', 'Accessories', 'Editorial', 'Sale'].map((item, i) => (
-            <SheetClose asChild key={item}><a href={i === 3 ? '#editorial' : '#shop'}><span>0{i + 1}</span>{item}<ArrowRight /></a></SheetClose>
-          ))}
+        <div className="menu-links">
+          <div className="menu-column">
+            <h3>Shop all</h3>
+            <SheetClose asChild><a href="#new">New arrivals</a></SheetClose>
+            <SheetClose asChild><a href="#shop">Clothing</a></SheetClose>
+            <SheetClose asChild><a href="#spotlight">Accessories</a></SheetClose>
+            <SheetClose asChild><a href="#editorial">The edit</a></SheetClose>
+            <SheetClose asChild><a href="#shop">Sale</a></SheetClose>
+          </div>
+          <div className="menu-column">
+            <h3>New in</h3>
+            <SheetClose asChild><a href="#new">This week</a></SheetClose>
+            <SheetClose asChild><a href="#shop">Most wanted</a></SheetClose>
+            <SheetClose asChild><a href="#shop">Fresh color</a></SheetClose>
+            <SheetClose asChild><a href="#spotlight">New accessories</a></SheetClose>
+            <SheetClose asChild><a href="#shop">Back in stock</a></SheetClose>
+          </div>
         </div>
-        <div className="menu-secondary">
-          <p className="mini-label">Categories</p>
-          <a href="#shop">Dresses</a><a href="#shop">Tops</a><a href="#shop">Denim</a><a href="#shop">Outerwear</a><a href="#shop">Bags</a><a href="#shop">Jewelry</a>
-          <p className="mini-label recommendations-label">Recommendations</p>
-          <div className="menu-chips"><span>Trending now</span><span>Under $50</span><span>New drop</span></div>
+        <div className="menu-mark" aria-hidden="true">
+          <img src="/images/miravel-pink-monogram.png" alt="" />
+          <span>Miravel / Drop 01</span>
         </div>
         <div className="menu-campaign">
-          <img src="/images/miravel-campaign.png" alt="Miravel spring campaign" />
-          <div><span>DROP 01 / SS26</span><strong>NEW PERSPECTIVE</strong></div>
+          <img src="/images/miravel-hero-model.png" alt="Model wearing a pink Miravel jacket and translucent glasses" />
+          <div><span>NEW FORM / SS26</span><strong>SHOP THE DROP</strong></div>
         </div>
       </div>
     </SheetContent>
