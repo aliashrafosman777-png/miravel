@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Check,
@@ -138,9 +138,17 @@ export function MiravelStore() {
   const [cartCount, setCartCount] = useState(0);
   const [filter, setFilter] = useState("All");
   const [added, setAdded] = useState(false);
+  const [headerScrolled, setHeaderScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+
+  useEffect(() => {
+    const updateHeader = () => setHeaderScrolled(window.scrollY > 80);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => window.removeEventListener("scroll", updateHeader);
+  }, []);
 
   const addBag = () => {
     setCartCount((value) => value + 1);
@@ -153,19 +161,22 @@ export function MiravelStore() {
   return (
     <main>
       <div className="announcement"><span>NEW SEASON / SS26</span><span className="announcement-center">COMPLIMENTARY SHIPPING OVER $80</span><span>CAIRO / 28°</span></div>
-      <header className="site-header">
+      <header className={`site-header${headerScrolled ? " is-scrolled" : ""}`}>
         <nav aria-label="Primary navigation" className="desktop-nav">
           <a href="#new">New in</a>
           <button onClick={() => setMenuOpen(true)}>Shop</button>
           <a href="#editorial">Editorial</a>
         </nav>
         <button className="mobile-icon" aria-label="Open menu" onClick={() => setMenuOpen(true)}><Menu strokeWidth={1.5} /></button>
-        <a className="wordmark" href="#top" aria-label="Miravel home">MIRAVEL</a>
+        <a className="wordmark" href="#top" aria-label="Miravel home">
+          <img src="/images/miravel-glass-logo.png" alt="Miravel M" />
+        </a>
         <div className="header-actions">
           <button aria-label="Search" onClick={() => setSearchOpen(true)}><Search strokeWidth={1.45} /></button>
           <button aria-label={`Shopping bag with ${cartCount} items`} className="bag-button" onClick={() => setCartOpen(true)}><ShoppingBag strokeWidth={1.45} /><span>{cartCount}</span></button>
         </div>
       </header>
+      <div className="header-spacer" aria-hidden="true" />
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}><MenuPanel /></Sheet>
       <Dialog open={searchOpen} onOpenChange={setSearchOpen}><SearchModal /></Dialog>
       <Sheet open={cartOpen} onOpenChange={setCartOpen}><CartPanel count={cartCount} setCount={setCartCount} /></Sheet>
