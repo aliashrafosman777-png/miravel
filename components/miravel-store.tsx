@@ -171,11 +171,12 @@ export function MiravelStore() {
       <Sheet open={cartOpen} onOpenChange={setCartOpen}><CartPanel count={cartCount} setCount={setCartCount} /></Sheet>
 
       <section className="hero" id="top" aria-labelledby="hero-heading">
-        <p className="hero-edition">MIRAVEL / DROP 01</p><p className="hero-season">SS / 26</p>
+        <p className="hero-edition">CAMPAIGN</p><p className="hero-season"><span>815G</span><span>880</span><br />LABE</p>
         <div className="hero-brand" aria-hidden="true">MIRAVEL</div>
+        <img className="hero-model" src="/images/miravel-hero-model.png" alt="Model wearing a pink Miravel high-neck jacket and translucent glasses" />
         <Spark className="hero-spark" />
-        <div className="hero-copy"><p className="eyebrow">THE NEW PERSPECTIVE</p><h1 id="hero-heading">New<br />form</h1><a className="text-link" href="#shop">Explore collection <span>↗</span></a></div>
-        <p className="hero-caption">FUTURE-FORWARD ESSENTIALS<br />DESIGNED FOR RIGHT NOW.</p>
+        <div className="hero-copy"><h1 id="hero-heading">New<br />form</h1><a className="text-link" href="#shop">Explore collection <span>→</span></a></div>
+        <p className="hero-caption">MIRAVEL<br />FORM 01</p>
       </section>
 
       <div className="ticker" aria-label="Miravel brand values"><div><span>NEW PERSPECTIVE</span><i>✦</i><span>SAME ENERGY</span><i>✦</i><span>NEW PERSPECTIVE</span><i>✦</i><span>SAME ENERGY</span><i>✦</i></div></div>

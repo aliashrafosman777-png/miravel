@@ -110,36 +110,55 @@ button { font: inherit; }
 
 .hero {
   position: relative;
-  height: min(720px, calc(100svh - 96px));
-  min-height: 570px;
+  height: min(820px, calc(100svh - 96px));
+  min-height: 650px;
   overflow: hidden;
   border-inline: 1px solid var(--electric);
   border-bottom: 1px solid var(--electric);
-  background: linear-gradient(106deg, #fff 0 15%, #fff7fb 48%, #eff3ff 100%);
+  background:
+    radial-gradient(circle at 52% 46%, rgba(255,255,255,1) 0 28%, rgba(250,248,248,.8) 56%, transparent 74%),
+    linear-gradient(115deg, #f7f5f5 0%, #ffffff 46%, #f2f3f7 100%);
   isolation: isolate;
 }
 .hero-brand {
   position: absolute;
-  z-index: -1;
-  top: -2.5vw;
-  left: 1.8vw;
+  z-index: 1;
+  top: clamp(26px, 4.8vh, 52px);
+  left: 4.6vw;
   color: var(--electric);
-  font-family: Didot, "Bodoni MT", "Times New Roman", serif;
-  font-size: clamp(130px, 19vw, 290px);
-  line-height: .9;
-  letter-spacing: -.075em;
+  font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif;
+  font-size: clamp(150px, 17.4vw, 284px);
+  font-weight: 400;
+  line-height: .82;
+  letter-spacing: -.072em;
   white-space: nowrap;
 }
-.hero::after { content: ""; position: absolute; z-index: 2; inset: auto 0 0; height: 34%; pointer-events: none; background: linear-gradient(0deg, rgba(255,255,255,.82), rgba(255,255,255,0)); }
-.hero-copy { position: absolute; z-index: 4; right: 4.2vw; top: 34%; }
+.hero-model {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: -7%;
+  height: 102%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-54%);
+  object-fit: contain;
+  filter: drop-shadow(0 24px 34px rgba(24, 22, 34, .08));
+  user-select: none;
+  pointer-events: none;
+}
+.hero::after { content: ""; position: absolute; z-index: 3; inset: auto 0 0; height: 12%; pointer-events: none; background: linear-gradient(0deg, rgba(255,255,255,.55), rgba(255,255,255,0)); }
+.hero-copy { position: absolute; z-index: 4; right: 6.2vw; top: 40%; }
 .eyebrow, .hero-edition, .hero-season, .hero-caption { font-size: 12px; line-height: 1.25; font-weight: 700; letter-spacing: .085em; text-transform: uppercase; }
 .eyebrow { margin: 0 0 12px; color: var(--electric); }
-.hero-copy h1 { margin: 0 0 28px; font-family: Didot, "Bodoni MT", "Times New Roman", serif; font-size: clamp(72px, 8.3vw, 134px); font-weight: 400; line-height: .74; letter-spacing: -.065em; text-transform: uppercase; }
-.text-link { display: inline-flex; gap: 28px; font-weight: 700; }
-.hero-edition { position: absolute; z-index: 4; top: 20px; left: 2.4vw; margin: 0; }
-.hero-season { position: absolute; z-index: 4; top: 20px; right: 2.4vw; margin: 0; }
-.hero-caption { position: absolute; z-index: 4; bottom: 22px; left: 2.4vw; margin: 0; }
-.hero-spark { position: absolute; z-index: 3; top: 31%; left: 3.5vw; width: clamp(70px, 8vw, 124px); stroke: var(--electric); stroke-width: 1.2; }
+.hero-copy h1 { margin: 0 0 clamp(38px, 6vh, 68px); font-family: "Bodoni 72", Didot, "Bodoni MT", "Times New Roman", serif; font-size: clamp(92px, 9.1vw, 152px); font-weight: 400; line-height: .77; letter-spacing: -.063em; text-transform: uppercase; }
+.hero-copy .text-link { display: inline-flex; align-items: center; gap: 20px; font-size: clamp(15px, 1.2vw, 19px); font-stretch: condensed; font-weight: 500; letter-spacing: -.01em; }
+.hero-copy .text-link span { font-size: 1.8em; font-weight: 300; line-height: .5; }
+.hero-edition { position: absolute; z-index: 4; top: auto; bottom: 30px; left: 5.7vw; margin: 0; font-size: 13px; }
+.hero-season { position: absolute; z-index: 4; top: 42px; right: 4.2vw; margin: 0; text-align: center; font-size: 12px; line-height: 1.05; }
+.hero-season span { display: inline-block; margin: 0 7px; }
+.hero-caption { position: absolute; z-index: 4; right: 4.2vw; bottom: 27px; left: auto; margin: 0; text-align: center; font-size: 11px; line-height: 1.05; }
+.hero-spark { position: absolute; z-index: 4; top: 43%; left: 9.2vw; width: clamp(105px, 10vw, 156px); stroke: var(--electric); stroke-width: 1.1; }
 .ticker { overflow: hidden; border: 1px solid var(--electric); border-top: 0; background: var(--bubblegum); color: var(--electric); }
 .ticker div { width: max-content; padding: 14px 0 10px; display: flex; align-items: center; gap: 30px; font-family: Didot, "Bodoni MT", "Times New Roman", serif; font-size: clamp(32px, 4.4vw, 68px); line-height: 1; white-space: nowrap; animation: marquee 24s linear infinite; }
 .ticker i { font-family: serif; font-size: .5em; font-style: normal; }
@@ -154,16 +173,16 @@ button { font: inherit; }
   .wordmark { font-size: 27px; }
   .header-actions { gap: 14px; }
   .bag-button span { display: none; }
-  .hero { height: calc(100svh - 84px); min-height: 620px; }
-  .hero-brand { z-index: 3; top: 10px; left: 12px; font-size: 22.3vw; color: var(--electric); mix-blend-mode: multiply; }
-  .hero::after { z-index: 2; height: 47%; background: linear-gradient(0deg, white 18%, rgba(255,255,255,.92) 46%, transparent); }
-  .hero-copy { left: 18px; right: 18px; top: auto; bottom: 68px; }
-  .eyebrow { margin-bottom: 10px; }
-  .hero-copy h1 { margin-bottom: 22px; font-size: clamp(72px, 25vw, 108px); line-height: .77; }
-  .text-link { gap: 18px; }
+  .hero { height: calc(100svh - 84px); min-height: 700px; }
+  .hero-brand { z-index: 1; top: 24px; left: 10px; font-size: 22.8vw; color: var(--electric); }
+  .hero-model { height: 75%; bottom: 0; left: 50%; transform: translateX(-51%); }
+  .hero::after { z-index: 3; height: 50%; background: linear-gradient(0deg, white 11%, rgba(255,255,255,.92) 36%, transparent 76%); }
+  .hero-copy { left: 18px; right: 18px; top: auto; bottom: 70px; }
+  .hero-copy h1 { margin-bottom: 22px; font-size: clamp(72px, 24vw, 104px); line-height: .76; }
+  .hero-copy .text-link { gap: 14px; font-size: 13px; }
   .hero-edition, .hero-season { display: none; }
   .hero-caption { bottom: 18px; left: auto; right: 16px; text-align: right; font-size: 10px; }
-  .hero-spark { top: 34%; left: 12px; width: 62px; }
+  .hero-spark { top: 30%; left: 14px; width: 72px; }
   .ticker div { padding: 12px 0 8px; gap: 18px; font-size: 34px; }
 }
 
