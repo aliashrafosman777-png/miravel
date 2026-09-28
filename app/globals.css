@@ -102,7 +102,10 @@ button { font: inherit; }
   background: rgba(255,255,255,.9);
   box-shadow: 0 15px 38px rgba(22,42,96,.18), inset 0 1px 0 rgba(255,255,255,.96);
 }
-.header-spacer { height: 86px; }
+.header-spacer {
+  height: 86px;
+  background: linear-gradient(180deg, #faf9fa 0%, #f6f6f9 100%);
+}
 .desktop-nav { grid-column: 1; display: flex; gap: clamp(20px, 2.5vw, 42px); }
 .desktop-nav a, .desktop-nav button, .text-link { position: relative; border: 0; padding: 4px 0; background: none; font-size: 12px; font-weight: 700; text-decoration: none; text-transform: uppercase; letter-spacing: .12em; cursor: pointer; }
 .desktop-nav a::after, .desktop-nav button::after, .text-link::after { content: ""; position: absolute; inset: auto 100% -4px 0; height: 1px; background: currentColor; transition: inset .25s ease; }
