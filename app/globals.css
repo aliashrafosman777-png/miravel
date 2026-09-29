@@ -412,7 +412,7 @@ body:has(.menu-panel[data-state="open"]) .site-header {
 @media (max-width: 760px) {
   .menu-panel {
     inset: 8px auto 8px 8px !important;
-    width: calc(50vw - 8px) !important;
+    width: calc(61vw - 8px) !important;
     height: calc(100svh - 16px) !important;
     overflow: hidden;
     transform: none !important;
