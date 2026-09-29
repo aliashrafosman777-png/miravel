@@ -69,7 +69,7 @@ function MenuPanel() {
       <SheetTitle className="sr-only">Shop Miravel</SheetTitle>
       <SheetDescription className="sr-only">Browse all clothing, accessories, new arrivals and editorial collections.</SheetDescription>
       <SheetClose className="mega-close" aria-label="Close menu"><X /></SheetClose>
-      <div className="menu-grid">
+      <div className="menu-grid desktop-menu-view">
         <div className="menu-links">
           <div className="menu-column">
             <h3>Shop all</h3>
@@ -95,6 +95,35 @@ function MenuPanel() {
         <div className="menu-campaign">
           <img src="/images/miravel-hero-model.png" alt="Model wearing a pink Miravel jacket and translucent glasses" />
           <div><span>NEW FORM / SS26</span><strong>SHOP THE DROP</strong></div>
+        </div>
+      </div>
+      <div className="mobile-menu-view">
+        <img className="mobile-menu-backdrop" src="/images/miravel-hero-model.png" alt="" aria-hidden="true" />
+        <div className="mobile-menu-veil" aria-hidden="true" />
+        <div className="mobile-menu-content">
+          <div className="mobile-menu-topline">
+            <img className="mobile-menu-logo" src="/images/miravel-glass-logo.png" alt="Miravel" />
+            <span>01 / SS26</span>
+          </div>
+          <p className="mobile-menu-title" aria-hidden="true">NAVI<br />MOBILE<br />MENU</p>
+          <nav className="mobile-menu-categories" aria-label="Mobile categories">
+            <p>Categories</p>
+            <SheetClose asChild><a href="#new">New in</a></SheetClose>
+            <SheetClose asChild><a href="#shop">Clothing</a></SheetClose>
+            <SheetClose asChild><a href="#spotlight">Accessories</a></SheetClose>
+            <SheetClose asChild><a href="#editorial">The edit</a></SheetClose>
+            <SheetClose asChild><a href="#shop">Sale</a></SheetClose>
+          </nav>
+          <div className="mobile-menu-recommendations">
+            <p>Recommendations</p>
+            <div>
+              <SheetClose asChild><a href="#new">Trending now</a></SheetClose>
+              <SheetClose asChild><a href="#shop">Under $50</a></SheetClose>
+              <SheetClose asChild><a href="#new">New drop</a></SheetClose>
+              <SheetClose asChild><a href="#shop">Most wanted</a></SheetClose>
+              <SheetClose asChild><a href="#spotlight">Accessories</a></SheetClose>
+            </div>
+          </div>
         </div>
       </div>
     </SheetContent>
