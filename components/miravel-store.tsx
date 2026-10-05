@@ -222,7 +222,7 @@ export function MiravelStore() {
       <section className="hero" id="top" aria-labelledby="hero-heading">
         <p className="hero-edition">CAMPAIGN</p><p className="hero-season"><span>815G</span><span>880</span><br />LABE</p>
         <div className="hero-brand" aria-hidden="true">MIRAVEL</div>
-        <img className="hero-model" src="/images/miravel-hero-model.png" alt="Model wearing a pink Miravel high-neck jacket and translucent glasses" />
+        <img className="hero-model" src="/images/miravel-hero-model-wide.png" alt="Model wearing a pink Miravel high-neck jacket and translucent glasses" />
         <Spark className="hero-spark" />
         <div className="hero-copy"><h1 id="hero-heading">New<br />form</h1><a className="text-link" href="#shop">Explore collection <span>→</span></a></div>
         <p className="hero-caption">MIRAVEL<br />FORM 01</p>

@@ -160,11 +160,11 @@ button { font: inherit; }
   position: absolute;
   z-index: 2;
   left: 50%;
-  bottom: -7%;
-  height: 102%;
+  bottom: -2%;
+  height: 116%;
   width: auto;
   max-width: none;
-  transform: translateX(-54%);
+  transform: translateX(-49%);
   object-fit: contain;
   filter: drop-shadow(0 24px 34px rgba(24, 22, 34, .08));
   user-select: none;
@@ -201,7 +201,7 @@ button { font: inherit; }
   .bag-button span { display: none; }
   .hero { height: calc(100svh - 84px); min-height: 700px; }
   .hero-brand { z-index: 1; top: 24px; left: 10px; font-size: 22.8vw; color: var(--electric); }
-  .hero-model { height: 75%; bottom: 0; left: 50%; transform: translateX(-51%); }
+  .hero-model { height: 102%; bottom: -2%; left: 50%; transform: translateX(-49%); }
   .hero::after { z-index: 3; height: 50%; background: linear-gradient(0deg, white 11%, rgba(255,255,255,.92) 36%, transparent 76%); }
   .hero-copy { left: 18px; right: 18px; top: auto; bottom: 70px; }
   .hero-copy h1 { margin-bottom: 22px; font-size: clamp(72px, 24vw, 104px); line-height: .76; }
