@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   ArrowRight,
   Check,
@@ -11,7 +11,6 @@ import {
   Plus,
   Search,
   ShoppingBag,
-  SlidersHorizontal,
   X,
 } from "lucide-react";
 import {
@@ -21,7 +20,6 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Dialog,
@@ -37,28 +35,40 @@ import {
 } from "@/components/ui/accordion";
 
 const products = [
-  { id: 1, name: "Orbit shell jacket", price: 64, type: "Jackets", image: "/images/miravel-campaign.png", position: "18% center", color: "Bubblegum" },
-  { id: 2, name: "Frame tank dress", price: 48, type: "Dresses", image: "/images/miravel-editorial.png", position: "center 28%", color: "Clean white" },
-  { id: 3, name: "Nova wide-leg jean", price: 58, type: "Denim", image: "/images/miravel-campaign.png", position: "53% center", color: "Electric wash" },
-  { id: 4, name: "Afterglow mesh top", price: 42, type: "Tops", image: "/images/miravel-campaign.png", position: "86% center", color: "Midnight" },
-  { id: 5, name: "Halo shoulder bag", price: 45, type: "Accessories", image: "/images/miravel-bag.png", position: "center", color: "Hot pink" },
-  { id: 6, name: "Axis mini dress", price: 55, type: "Dresses", image: "/images/miravel-editorial.png", position: "center 56%", color: "Optic white" },
+  { id: 1, name: "Orbit shell jacket", price: 64, type: "Jackets", color: "Bubblegum", images: [
+    { src: "/images/products/orbit-jacket-01.jpg", position: "center" }, { src: "/images/products/orbit-jacket-02.jpg", position: "center" },
+    { src: "/images/products/orbit-jacket-03.jpg", position: "center" }, { src: "/images/products/orbit-jacket-04.jpg", position: "center" },
+  ] },
+  { id: 2, name: "Azure halter top", price: 42, type: "Tops", color: "Electric blue", images: [
+    { src: "/images/products/azure-top-01.jpg", position: "center" }, { src: "/images/products/azure-top-02.jpg", position: "center" },
+    { src: "/images/products/azure-top-03.jpg", position: "center" }, { src: "/images/products/azure-top-04.jpg", position: "center" },
+    { src: "/images/products/azure-top-05.jpg", position: "center" },
+  ] },
+  { id: 3, name: "Nova wide-leg jean", price: 58, type: "Denim", color: "Electric wash", images: [
+    { src: "/images/products/nova-jeans-01.jpg", position: "center" }, { src: "/images/products/nova-jeans-02.jpg", position: "center" },
+    { src: "/images/products/nova-jeans-03.jpg", position: "center" }, { src: "/images/products/nova-jeans-04.jpg", position: "center" },
+  ] },
+  { id: 4, name: "Axis denim mini skirt", price: 52, type: "Skirts", color: "Light wash", images: [
+    { src: "/images/products/axis-skirt-01.jpg", position: "center" }, { src: "/images/products/axis-skirt-02.jpg", position: "center" },
+    { src: "/images/products/axis-skirt-03.jpg", position: "center" }, { src: "/images/products/axis-skirt-04.jpg", position: "center" },
+  ] },
+  { id: 5, name: "Halo shoulder bag", price: 45, type: "Accessories", color: "Hot pink", images: [
+    { src: "/images/products/halo-bag-01.jpg", position: "center", contain: true }, { src: "/images/products/halo-bag-02.jpg", position: "center", contain: true },
+    { src: "/images/products/halo-bag-03.jpg", position: "center", contain: true },
+  ] },
+  { id: 6, name: "Future runner sneaker", price: 68, type: "Shoes", color: "Silver blue", images: [
+    { src: "/images/products/future-sneaker-01.jpg", position: "center", contain: true }, { src: "/images/products/future-sneaker-02.jpg", position: "center", contain: true },
+    { src: "/images/products/future-sneaker-03.jpg", position: "center", contain: true },
+  ] },
 ];
+
+const haloImages = products.find((product) => product.id === 5)!.images;
 
 function Spark({ className = "" }: { className?: string }) {
   return (
     <svg aria-hidden="true" className={className} viewBox="0 0 100 100" fill="none">
       <path d="M50 2C50 34 34 50 2 50C34 50 50 66 50 98C50 66 66 50 98 50C66 50 50 34 50 2Z" />
       <path d="M78 8C78 18.7 72.7 24 62 24C72.7 24 78 29.3 78 40C78 29.3 83.3 24 94 24C83.3 24 78 18.7 78 8Z" />
-    </svg>
-  );
-}
-
-function Monogram({ className = "" }: { className?: string }) {
-  return (
-    <svg className={className} aria-label="Miravel M monogram" viewBox="0 0 220 150" fill="none">
-      <path d="M14 124 61 22c7-15 24-15 29 1l17 50 31-50c9-15 30-11 32 6l10 97h-39l-2-54-31 49c-7 11-23 9-27-3L66 74l-19 50H14Z" fill="currentColor" />
-      <path d="M28 110C69 80 115 50 204 36" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
@@ -174,12 +184,77 @@ function CartPanel({ count, setCount }: { count: number; setCount: (count: numbe
 
 export function MiravelStore() {
   const [cartCount, setCartCount] = useState(0);
-  const [filter, setFilter] = useState("All");
   const [added, setAdded] = useState(false);
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [productGalleryIndexes, setProductGalleryIndexes] = useState<Record<number, number>>({});
+  const [spotlightImageIndex, setSpotlightImageIndex] = useState(0);
+  const [railProgress, setRailProgress] = useState(0);
+  const railRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const dragStart = useRef({ x: 0, scrollLeft: 0 });
+
+  const updateProgress = useCallback(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const maxScroll = rail.scrollWidth - rail.clientWidth;
+    if (maxScroll <= 0) { setRailProgress(0); return; }
+    setRailProgress(rail.scrollLeft / maxScroll);
+  }, []);
+
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    rail.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+    return () => rail.removeEventListener("scroll", updateProgress);
+  }, [updateProgress]);
+
+  // Mouse wheel horizontal scrolling
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        const maxScroll = rail.scrollWidth - rail.clientWidth;
+        if (maxScroll <= 0) return;
+        // Only prevent default if we can still scroll in that direction
+        if ((e.deltaY > 0 && rail.scrollLeft < maxScroll) || (e.deltaY < 0 && rail.scrollLeft > 0)) {
+          e.preventDefault();
+          rail.scrollLeft += e.deltaY;
+        }
+      }
+    };
+    rail.addEventListener("wheel", onWheel, { passive: false });
+    return () => rail.removeEventListener("wheel", onWheel);
+  }, []);
+
+  // Drag to scroll
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    isDragging.current = true;
+    dragStart.current = { x: e.clientX, scrollLeft: rail.scrollLeft };
+    rail.setPointerCapture(e.pointerId);
+    rail.style.cursor = "grabbing";
+    rail.style.scrollSnapType = "none";
+  }, []);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current || !railRef.current) return;
+    const dx = e.clientX - dragStart.current.x;
+    railRef.current.scrollLeft = dragStart.current.scrollLeft - dx;
+  }, []);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current || !railRef.current) return;
+    isDragging.current = false;
+    railRef.current.releasePointerCapture(e.pointerId);
+    railRef.current.style.cursor = "";
+    railRef.current.style.scrollSnapType = "";
+  }, []);
 
   useEffect(() => {
     const updateHeader = () => setHeaderScrolled(window.scrollY > 80);
@@ -194,7 +269,12 @@ export function MiravelStore() {
     window.setTimeout(() => setAdded(false), 1800);
   };
 
-  const visibleProducts = filter === "All" ? products : products.filter((product) => product.type === filter);
+  const changeProductImage = (productId: number, imageCount: number, direction: number) => {
+    setProductGalleryIndexes((current) => ({
+      ...current,
+      [productId]: ((current[productId] ?? 0) + direction + imageCount) % imageCount,
+    }));
+  };
 
   return (
     <main>
@@ -228,48 +308,77 @@ export function MiravelStore() {
         <p className="hero-caption">MIRAVEL<br />FORM 01</p>
       </section>
 
-      <div className="ticker" aria-label="Miravel brand values"><div><span>NEW PERSPECTIVE</span><i>✦</i><span>SAME ENERGY</span><i>✦</i><span>NEW PERSPECTIVE</span><i>✦</i><span>SAME ENERGY</span><i>✦</i></div></div>
-
       <section className="collection" id="shop">
-        <div className="section-heading"><div><p className="mini-label">01 / THE LATEST DROP</p><h2>Shop the<br /><em>new energy.</em></h2></div><p>Everyday pieces with an after-dark point of view. Designed to mix, repeat and make your own.</p></div>
-        <div className="collection-tools">
-          <div className="filter-pills" role="group" aria-label="Filter products">
-            {['All', 'Dresses', 'Tops', 'Denim', 'Jackets', 'Accessories'].map((item) => <button key={item} className={filter === item ? 'active' : ''} onClick={() => setFilter(item)}>{item}</button>)}
+        <div className="most-wanted">
+          <h2>Most wanted</h2>
+          <div
+            className="product-rail"
+            id="new"
+            ref={railRef}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerUp}
+          >
+          {products.map((product, index) => {
+            const imageIndex = productGalleryIndexes[product.id] ?? 0;
+            const image = product.images[imageIndex];
+            return (
+              <article className="wanted-card" key={product.id}>
+                <div className="wanted-image">
+                  <img draggable={false} className={image.contain ? 'contain' : ''} src={image.src} alt={`${product.name}, view ${imageIndex + 1} of ${product.images.length}`} style={{ objectPosition: image.position }} />
+                  <span className="wanted-gallery-count">{imageIndex + 1} / {product.images.length}</span>
+                  <div className="wanted-gallery-controls">
+                    <button type="button" aria-label={`Previous image of ${product.name}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => changeProductImage(product.id, product.images.length, -1)}><ChevronLeft /></button>
+                    <button type="button" aria-label={`Next image of ${product.name}`} onPointerDown={(event) => event.stopPropagation()} onClick={() => changeProductImage(product.id, product.images.length, 1)}><ChevronRight /></button>
+                  </div>
+                </div>
+                <a className="wanted-meta" href={product.id === 5 ? '#spotlight' : '#shop'} draggable={false}><small>{String(index + 1).padStart(2, '0')}</small><strong>{product.name}</strong><span>${product.price}.00</span></a>
+              </article>
+            );
+          })}
           </div>
-          <Sheet><SheetTrigger asChild><button className="filter-button"><SlidersHorizontal /> Filter</button></SheetTrigger><SheetContent side="bottom" className="filter-sheet"><SheetHeader><SheetTitle>Filter the drop</SheetTitle><SheetDescription>Choose what fits your perspective.</SheetDescription></SheetHeader><div className="filter-sheet-grid"><div><p className="mini-label">Color</p><div className="large-swatches"><button aria-label="Bubblegum pink" /><button aria-label="Hot pink" /><button aria-label="Electric blue" /><button aria-label="Black" /><button aria-label="White" /></div></div><div><p className="mini-label">Size</p><div className="size-list"><button>XS</button><button>S</button><button>M</button><button>L</button><button>XL</button></div></div></div><SheetClose asChild><button className="solid-button filter-apply">Show {visibleProducts.length} pieces</button></SheetClose></SheetContent></Sheet>
-        </div>
-        <div className="product-grid" id="new">
-          {visibleProducts.map((product, index) => (
-            <article className="product-card" key={product.id}>
-              <a className="product-image" href={product.id === 5 ? '#spotlight' : '#shop'}>
-                {index < 2 && <span className="product-badge">{index === 0 ? 'New' : 'Bestseller'}</span>}
-                <img src={product.image} alt={product.name} style={{ objectPosition: product.position }} />
-                <span className="quick-add" onClick={(event) => { event.preventDefault(); addBag(); }}>Quick add <Plus /></span>
-              </a>
-              <div className="product-meta"><div><h3>{product.name}</h3><p>{product.color}</p></div><strong>${product.price}.00</strong></div>
-            </article>
-          ))}
+          <div className="rail-progress" aria-hidden="true"><span style={{ width: `${Math.max(12.5, (1 / products.length) * 100)}%`, transform: `translateX(${railProgress * ((products.length / 1) - 1) * 100}%)` }} /></div>
         </div>
       </section>
 
-      <section className="editorial" id="editorial">
-        <div className="editorial-main"><img src="/images/miravel-campaign.png" alt="Miravel Future Forward campaign" /><div className="editorial-copy"><p className="mini-label">02 / MIRAVEL EDITORIAL</p><h2>Future<br />forward</h2><p>Soft color. Sharp proportions. A wardrobe built for every version of you.</p><a className="text-link" href="#shop">View the story <span>↗</span></a></div></div>
-        <div className="editorial-detail"><div className="crop-grid"><img src="/images/miravel-editorial.png" alt="Miravel white dress editorial portrait" /><img src="/images/miravel-editorial.png" alt="Detail of Miravel editorial makeup and styling" /></div><div><Spark /><p className="mini-label">LOOK 04 / OPTIC WHITE</p><h3>Clean lines.<br /><em>Maximum impact.</em></h3></div></div>
+      <section className="category-showcase" id="categories" aria-labelledby="category-heading">
+        <div className="category-bar"><h2 id="category-heading">Shop by category</h2><span>Mobile</span></div>
+        <div className="category-grid">
+          <a className="category-card" href="#shop"><img src="/images/products/orbit-jacket-02.jpg" alt="Woman wearing a pink Miravel jacket" /><h3>Women</h3><p>Technical captions<br />on-hover effect</p></a>
+          <a className="category-card" href="#new"><img src="/images/products/azure-top-02.jpg" alt="Woman wearing a blue Miravel top" /><h3>New in</h3><p>Technical captions<br />on-hover effect</p></a>
+          <a className="category-card" href="#spotlight"><img src="/images/products/halo-bag-01.jpg" alt="Pink Miravel shoulder bag" /><h3>Accessories</h3><p>Technical captions<br />on-hover effect</p></a>
+          <a className="category-card" href="#shop"><img src="/images/products/nova-jeans-04.jpg" alt="Woman wearing Miravel wide-leg jeans" /><h3>Essentials</h3><p>Technical captions<br />on-hover effect</p></a>
+        </div>
       </section>
 
       <section className="spotlight" id="spotlight">
-        <div className="spotlight-gallery"><div className="thumbs"><button className="active"><img src="/images/miravel-bag.png" alt="" /></button><button><img src="/images/miravel-campaign.png" alt="" /></button><button><img src="/images/miravel-editorial.png" alt="" /></button></div><div className="spotlight-image"><span className="image-count">01 / 03</span><button className="gallery-arrow left" aria-label="Previous image"><ChevronLeft /></button><img src="/images/miravel-bag.png" alt="Halo translucent pink shoulder bag" /><button className="gallery-arrow right" aria-label="Next image"><ChevronRight /></button></div></div>
+        <div className="spotlight-gallery"><div className="thumbs">{haloImages.map((image, index) => <button key={image.src} className={spotlightImageIndex === index ? 'active' : ''} onClick={() => setSpotlightImageIndex(index)} aria-label={`Show bag image ${index + 1}`}><img src={image.src} alt="" /></button>)}</div><div className="spotlight-image"><span className="image-count">{String(spotlightImageIndex + 1).padStart(2, '0')} / {String(haloImages.length).padStart(2, '0')}</span><button className="gallery-arrow left" aria-label="Previous image" onClick={() => setSpotlightImageIndex((current) => (current - 1 + haloImages.length) % haloImages.length)}><ChevronLeft /></button><img src={haloImages[spotlightImageIndex].src} alt={`Halo translucent pink shoulder bag, view ${spotlightImageIndex + 1}`} /><button className="gallery-arrow right" aria-label="Next image" onClick={() => setSpotlightImageIndex((current) => (current + 1) % haloImages.length)}><ChevronRight /></button></div></div>
         <div className="spotlight-info"><p className="mini-label">ACCESSORIES / NEW</p><h2>Halo<br />shoulder bag</h2><div className="price-row"><strong>$45.00</strong><span>or 4 payments of $11.25</span></div><p className="product-description">The compact icon of Drop 01. A translucent pink finish, silver hardware and electric-blue edge detail bring future energy to every look.</p><div className="color-choice"><span>Color: <strong>Hot pink</strong></span><div className="large-swatches"><button className="selected" aria-label="Hot pink selected"><Check /></button><button aria-label="Bubblegum pink" /><button aria-label="Silver" /></div></div><button className="solid-button add-button" onClick={addBag}>{added ? <><Check /> Added to bag</> : <>Add to bag <ArrowRight /></>}</button><Accordion type="single" collapsible className="product-accordion"><AccordionItem value="details"><AccordionTrigger>Product details</AccordionTrigger><AccordionContent>Soft transparent TPU with a nylon lining, polished hardware and an adjustable shoulder strap. 24 × 14 × 7 cm.</AccordionContent></AccordionItem><AccordionItem value="delivery"><AccordionTrigger>Delivery & returns</AccordionTrigger><AccordionContent>Complimentary shipping over $80. Returns accepted within 21 days in original condition.</AccordionContent></AccordionItem><AccordionItem value="care"><AccordionTrigger>Care guide</AccordionTrigger><AccordionContent>Wipe clean with a soft damp cloth. Keep away from prolonged heat and direct sunlight.</AccordionContent></AccordionItem></Accordion></div>
       </section>
 
-      <section className="brand-code">
-        <div className="brand-title"><p className="mini-label">03 / THE MIRAVEL CODE</p><h2>Fluid form.<br /><em>Electric spirit.</em></h2></div>
-        <div className="monogram-card"><span>FLAT / ELECTRIC</span><Monogram /><small>THE MIRAVEL M</small></div>
-        <div className="glass-card"><span>TRANSLUCENT / CAMPAIGN</span><div className="glass-orbit"><Monogram /></div><small>FUTURE-FORWARD</small></div>
-        <div className="palette-card"><p className="mini-label">Signature colors</p><div><span style={{ background: '#3267FF' }}><b>Electric blue</b><small>#3267FF</small></span><span style={{ background: '#FF9FCC' }}><b>Bubblegum</b><small>#FF9FCC</small></span><span style={{ background: '#FF4F9D' }}><b>Hot pink</b><small>#FF4F9D</small></span><span style={{ background: '#FFFFFF' }}><b>Clean white</b><small>#FFFFFF</small></span></div></div>
+      <section className="community" id="editorial" aria-label="Miravel social and newsletter">
+        <div className="instagram-panel">
+          <div className="instagram-heading"><div><p>Instagram</p><h2>@Miravel</h2></div><a href="#top">Follow CTA</a></div>
+          <div className="social-grid">
+            <a href="#top"><img src="/images/miravel-campaign.png" alt="Miravel editorial look" style={{ objectPosition: '88% center' }} /></a>
+            <a href="#top"><img src="/images/miravel-hero-model.png" alt="Pink Miravel jacket look" style={{ objectPosition: 'center 28%' }} /></a>
+            <a href="#top"><img src="/images/miravel-campaign.png" alt="Miravel campaign group" style={{ objectPosition: '55% center' }} /></a>
+            <a href="#top"><img src="/images/miravel-campaign.png" alt="Miravel midnight look" style={{ objectPosition: '94% center' }} /></a>
+            <a href="#top"><img src="/images/miravel-editorial.png" alt="Miravel clean white look" style={{ objectPosition: 'center 35%' }} /></a>
+            <a href="#top"><img src="/images/miravel-hero-model.png" alt="Miravel bubblegum look" style={{ objectPosition: 'center 44%' }} /></a>
+          </div>
+        </div>
+        <div className="newsletter-panel">
+          <span className="newsletter-orbit orbit-top" aria-hidden="true" />
+          <span className="newsletter-orbit orbit-bottom" aria-hidden="true" />
+          <span className="newsletter-star star-top" aria-hidden="true">✦</span>
+          <span className="newsletter-star star-bottom" aria-hidden="true">✦</span>
+          <div className="newsletter-content"><p>Newsletter</p><h2>Enter<br />the orbit</h2><form onSubmit={(event) => event.preventDefault()}><label><span className="sr-only">Email address</span><input type="email" placeholder="email" required /></label><button type="submit">Join <ArrowRight /></button></form></div>
+        </div>
       </section>
 
-      <footer className="footer"><div className="footer-top"><div><p className="mini-label">Stay in the loop</p><h2>First looks,<br />fresh energy.</h2></div><form onSubmit={(event) => event.preventDefault()}><label><span className="sr-only">Email address</span><input type="email" placeholder="Email address" required /><button aria-label="Subscribe"><ArrowRight /></button></label><p>By subscribing, you agree to receive Miravel updates.</p></form></div><div className="footer-links"><div><a href="#shop">Shop</a><a href="#new">New in</a><a href="#editorial">Editorial</a></div><div><a href="#top">Instagram</a><a href="#top">TikTok</a><a href="#top">Pinterest</a></div><div><a href="#top">Shipping</a><a href="#top">Returns</a><a href="#top">Contact</a></div></div><div className="footer-wordmark">MIRAVEL</div><div className="footer-legal"><span>© 2026 MIRAVEL</span><span>NEW PERSPECTIVE / SAME ENERGY</span><span>PRIVACY / TERMS</span></div></footer>
+      <footer className="footer"><div className="footer-links"><div><a href="#shop">Shop</a><a href="#new">New in</a><a href="#editorial">Editorial</a></div><div><a href="#top">Instagram</a><a href="#top">TikTok</a><a href="#top">Pinterest</a></div><div><a href="#top">Shipping</a><a href="#top">Returns</a><a href="#top">Contact</a></div></div><div className="footer-wordmark">MIRAVEL</div><div className="footer-legal"><span>© 2026 MIRAVEL</span><span>NEW PERSPECTIVE / SAME ENERGY</span><span>PRIVACY / TERMS</span></div></footer>
       {added && <div className="added-toast" role="status"><Check /> Halo bag added</div>}
     </main>
   );
