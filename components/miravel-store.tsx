@@ -34,7 +34,22 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const products = [
+type ProductImage = {
+  src: string;
+  position: string;
+  contain?: boolean;
+};
+
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  type: string;
+  color: string;
+  images: ProductImage[];
+};
+
+const products: Product[] = [
   { id: 1, name: "Orbit shell jacket", price: 64, type: "Jackets", color: "Bubblegum", images: [
     { src: "/images/products/orbit-jacket-01.jpg", position: "center" }, { src: "/images/products/orbit-jacket-02.jpg", position: "center" },
     { src: "/images/products/orbit-jacket-03.jpg", position: "center" }, { src: "/images/products/orbit-jacket-04.jpg", position: "center" },
